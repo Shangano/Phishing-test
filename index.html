@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Awareness Notice</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f4f5f7;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .card {
+    background: #ffffff;
+    max-width: 520px;
+    width: 90%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 40px 36px;
+    text-align: center;
+  }
+  .icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  h1 {
+    color: #c0392b;
+    font-size: 22px;
+    margin: 0 0 16px;
+  }
+  p {
+    color: #333;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .detail {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+  }
+  .footer {
+    font-size: 12px;
+    color: #999;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🎣</div>
+    <h1>This was a phishing test</h1>
+    <p>You clicked a simulated phishing link as part of an internal security awareness exercise. No data was compromised and no real salary information exists at this link.</p>
+
+    <div class="detail" id="detailBox">
+      Loading your details...
+    </div>
+
+    <p><strong>You have been automatically enrolled in mandatory IT security training.</strong> You will receive an email shortly with instructions and a deadline to complete it.</p>
+
+    <div class="footer">
+      If you believe you received this in error, contact the IT Security team.
+    </div>
+  </div>
+
+  <script>
+    // Grab identifying info from the URL, e.g.
+    // landing.html?name=Jane%20Doe&email=jane.doe@company.com
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name') || 'Unknown';
+    const email = params.get('email') || 'Unknown';
+    const timestamp = new Date().toISOString();
+
+    document.getElementById('detailBox').innerHTML =
+      `<strong>Name:</strong> ${name}<br>` +
+      `<strong>Email:</strong> ${email}<br>` +
+      `<strong>Clicked at:</strong> ${timestamp}`;
+
+    // --- Logging ---
+    // Replace WEBHOOK_URL below with the "Web app URL" you get after deploying
+    // the Google Apps Script (Deploy > New deployment > Web app).
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxMy1Ez5SloiQGHTmpOwNzptn00tRktwG3zDzpzXTtDQnfeZN77qYh-6vjfFcBu3Qrz/exec';
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' }, // avoids a CORS preflight with Apps Script
+      body: JSON.stringify({ name, email, timestamp })
+    }).catch(err => console.log('Logging failed (non-blocking):', err));
+
+    console.log('Phishing test click logged:', { name, email, timestamp });
+  </script>
+</body>
+</html>
