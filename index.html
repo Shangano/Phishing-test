@@ -91,7 +91,8 @@
 
     fetch(WEBHOOK_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' }, // avoids a CORS preflight with Apps Script
+      mode: 'no-cors', // Apps Script doesn't return CORS headers; this lets the POST go through
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ name, email, timestamp })
     }).catch(err => console.log('Logging failed (non-blocking):', err));
 
